@@ -1,0 +1,72 @@
+# Editor / IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node (in case future MCP work lands here)
+node_modules/
+*.log
+
+# Python (in case future tooling lands here)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Local config / secrets
+.env
+.env.local
+secrets/
+
+# Cache
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# Generated artifacts that should be rebuilt, not committed.
+# Release zips are built by .github/workflows/build-release-zip.yml on tag
+# push and attached to the GitHub Release — never committed to the tree.
+*.zip
+productization-plan/
+internal-planning/
+launch-assets/
+
+# Operator-side dev tools (pre-publish audit etc.)
+tools/
+
+# === Cruft prevention (added 2026-05-27 by portfolio sweep) ===
+# These patterns are blocked by default because operator-side tooling, IDE
+# config, planning material, and superseded code repeatedly leaked into
+# shipping repos. Provenance of removed-superseded content lives in the
+# ARC-907/products-cloud-archive bundles, NOT in product repos.
+
+# Operator-side / internal planning
+
+# IDE / editor config
+.obsidian/
+
+# Cloudflare wrangler cache (contains operator email + account ID)
+.wrangler/
+
+# Superseded / cold-storage
+archive/
+legacy/
+
+# Operator dev tooling
+pre-publish-grep.ps1
+pre-publish-grep.sh
+audit-fix.ps1
+audit-fix.sh
+
+# OS junk

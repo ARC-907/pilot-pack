@@ -1,0 +1,47 @@
+# Build release zips on tag push.
+# Gives buyers a downloadable zip alongside the "Use this template" GitHub button.
+#
+# Triggered on tag push matching v*.* (e.g., v1.0.0).
+# Builds two zips: free-tier and pro-toolkit. Attaches both to the GitHub Release.
+
+name: Build release zips
+
+on:
+  push:
+    tags:
+      - "v*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-zips:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify deliverables exist
+        run: |
+          test -d deliverables/v1.0-starter || { echo "v1.0-starter missing"; exit 1; }
+          test -d deliverables/v1.0-pro-toolkit || { echo "v1.0-pro-toolkit missing"; exit 1; }
+
+      - name: Build free-tier zip
+        run: |
+          cd deliverables
+          zip -r pilot-pack-starter-${{ github.ref_name }}.zip v1.0-starter -x "*.DS_Store" "**/.git/**"
+          ls -la pilot-pack-starter-${{ github.ref_name }}.zip
+
+      - name: Build pro-toolkit zip
+        run: |
+          cd deliverables
+          zip -r pilot-pack-pro-${{ github.ref_name }}.zip v1.0-pro-toolkit -x "*.DS_Store" "**/.git/**"
+          ls -la pilot-pack-pro-${{ github.ref_name }}.zip
+
+      - name: Upload release artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            deliverables/pilot-pack-starter-${{ github.ref_name }}.zip
+            deliverables/pilot-pack-pro-${{ github.ref_name }}.zip
+          fail_on_unmatched_files: true
+          generate_release_notes: false
