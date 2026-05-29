@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Free](https://img.shields.io/badge/price-free-success.svg)]()
-[![Tier: Starter](https://img.shields.io/badge/tier-starter-blue.svg)](../v1.0-pro-toolkit/README.md)
 [![Browser MCP](https://img.shields.io/badge/browser%20MCP-compatible-7C3AED.svg)]()
 [![Permission-first](https://img.shields.io/badge/safety-permission--first-2C7BB6.svg)]()
 [![Use this template](https://img.shields.io/badge/GitHub-Use%20this%20template-181717.svg?logo=github)]()
