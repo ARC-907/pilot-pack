@@ -2,7 +2,8 @@
 # Gives buyers a downloadable zip alongside the "Use this template" GitHub button.
 #
 # Triggered on tag push matching v*.* (e.g., v1.0.0).
-# Builds two zips: free-tier and pro-toolkit. Attaches both to the GitHub Release.
+# Always builds the starter zip; pro-toolkit zip is built only if the directory is present
+# (it is delivered via Polar bundle, so it may be absent from the public repo).
 
 name: Build release zips
 
@@ -20,24 +21,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify deliverables exist
+      - name: Verify starter deliverable exists
         run: |
           test -d deliverables/v1.0-starter || { echo "v1.0-starter missing"; exit 1; }
-          test -d deliverables/v1.0-pro-toolkit || { echo "v1.0-pro-toolkit missing"; exit 1; }
 
-      - name: Build free-tier zip
+      - name: Check for pro-toolkit deliverable
+        id: check_pro
+        run: |
+          if [ -d deliverables/v1.0-pro-toolkit ]; then
+            echo "pro_present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pro_present=false" >> "$GITHUB_OUTPUT"
+            echo "v1.0-pro-toolkit not present in repo — skipping pro zip (delivered via Polar)."
+          fi
+
+      - name: Build starter zip
         run: |
           cd deliverables
           zip -r pilot-pack-starter-${{ github.ref_name }}.zip v1.0-starter -x "*.DS_Store" "**/.git/**"
           ls -la pilot-pack-starter-${{ github.ref_name }}.zip
 
       - name: Build pro-toolkit zip
+        if: steps.check_pro.outputs.pro_present == 'true'
         run: |
           cd deliverables
           zip -r pilot-pack-pro-${{ github.ref_name }}.zip v1.0-pro-toolkit -x "*.DS_Store" "**/.git/**"
           ls -la pilot-pack-pro-${{ github.ref_name }}.zip
 
-      - name: Upload release artifacts
+      - name: Upload release artifacts (starter only)
+        if: steps.check_pro.outputs.pro_present != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            deliverables/pilot-pack-starter-${{ github.ref_name }}.zip
+          fail_on_unmatched_files: true
+          generate_release_notes: false
+
+      - name: Upload release artifacts (starter + pro)
+        if: steps.check_pro.outputs.pro_present == 'true'
         uses: softprops/action-gh-release@v2
         with:
           files: |
