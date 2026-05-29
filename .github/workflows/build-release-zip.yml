@@ -12,6 +12,8 @@ on:
     tags:
       - "v*.*"
 
+# Least-privilege scope: this workflow uploads release assets via softprops/action-gh-release,
+# which requires `contents: write`. No other scopes are needed.
 permissions:
   contents: write
 
